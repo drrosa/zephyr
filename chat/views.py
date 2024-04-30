@@ -1,11 +1,15 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from .models import Conversation
 
 
+@login_required
 def home(request):
-    return render(request, "home.html")
+    welcome_topic = get_object_or_404(Conversation, topic_name="welcome")
+    chat_messages = welcome_topic.chat_messages.all()[:30]
+    return render(request, "home.html", {"chat_messages": chat_messages})
 
 
 @login_required

@@ -1,14 +1,41 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Home</h1>
-
-{% if user.is_authenticated %}
-  {{ user.username }}
-  <a href="{% url 'logout' %}">Log Out</a>
-{% else %}
-  <a href="{% url 'signup' %}">Sign Up</a>
-  <a href="{% url 'login' %}">Log In</a>
-{% endif %}
+<wrapper class="block max-w-2xl mx-auto my-10 px-6">
+    <div id="chat_window" class="h-[45rem] flex flex-col bg-sky-950 rounded-2xl shadow-2xl relative p-1">
+        <div class="flex justify-center text-emerald-400 bg-sky-950 p-2 sticky top-0 z-10">
+            <span id="online-count" class="pr-1"></span>online
+        </div>
+        <div id='chat_container' class="overflow-y-auto grow">
+            <ul id='chat_messages' class="flex flex-col justify-end gap-2 p-4">
+                {% for message in chat_messages reversed %}
+                <li>
+                    <div class="flex justify-start">
+                        <div class="flex items-end mr-2 " >
+                            <a href="">
+                                <img class="w-8 h-8 object-cover" src="https://img.icons8.com/external-creatype-outline-colourcreatype/64/ffffff/external-profile-photo-camera-interface-creatype-outline-colourcreatype.png">
+                            </a>
+                        </div>
+                        <div class="bg-sky-700 text-white p-4 rounded-r-lg rounded-tl-lg w-full">
+                            <span>{{ message.content }}</span>
+                        </div>
+                    </div>
+                    <div class="text-sm font-light py-1 ml-10">
+                        <span class="text-white">{{ message.sender.first_name }}</span>
+                        <span class="text-sky-400">@{{ message.sender.username }}</span>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="sticky bottom-0 z-10 p-2 bg-sky-950">
+            <div class="flex items-center px-2 py-2">
+                <form id="chat_message_form" method='POST' class="w-full">
+                  <textarea name="message" placeholder="Add message ..." class="w-full p-4 rounded-xl"></textarea>
+                </form>
+            </div>
+        </div>
+    </div>
+</wrapper>
 
 {% endblock %}
