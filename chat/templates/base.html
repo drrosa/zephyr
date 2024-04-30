@@ -1,2 +1,44 @@
-{% block content %}
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Zephyr</title>
+  <style type="text/tailwindcss">
+    .navitems>li>a {
+      @apply p-4 hover:bg-sky-700 rounded-lg flex items-center gap-2
+    }
+  </style>
+</head>
+<body>
+
+  <header class="flex items-center justify-between px-8 bg-sky-900 h-20 text-white sticky top-0 z-50">
+    <logo>
+      <a class="flex items-center gap-1" href="{% url 'home' %}">
+        <img src="https://img.icons8.com/external-flat-amoghdesign/64/external-breeze-summer-flat-amoghdesign.png" alt="external-breeze-summer-flat-amoghdesign"/>
+        <span>Zephyr</span>
+      </a>
+    </logo>
+    <nav>
+      <ul class="flex items-center navitems">
+        <li><a href="{% url 'home' %}">Home</a></li>
+        {% if user.is_authenticated %}
+          <li><a href="">
+            {{ user.username }}
+            <img class="w-4" src="https://img.icons8.com/small/64/ffffff/expand-arrow.png" alt="expand-arrow"/>
+          </a></li>
+          <li><a href="{% url 'logout' %}">Log Out</a></li>
+        {% else %}
+          <li><a href="{% url 'signup' %}">Sign Up</a></li>
+          <li><a href="{% url 'login' %}">Log In</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+  <main>
+    {% block content %}
+    {% endblock %}
+  </main>
+</body>
+</html>
