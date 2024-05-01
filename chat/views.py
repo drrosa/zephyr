@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from .models import Conversation
+from django.views.generic.edit import DeleteView
+from .models import Conversation, Message
 from .forms import MessageForm
 
 
@@ -43,3 +44,8 @@ def signup(request):
     form = UserCreationForm()
     context = {"form": form, "error_message": error_message}
     return render(request, "registration/signup.html", context)
+
+
+class MessageDelete(DeleteView):
+    model = Message
+    success_url = "/"

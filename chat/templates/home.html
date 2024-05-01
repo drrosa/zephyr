@@ -16,8 +16,16 @@
                                 <img class="w-8 h-8 object-cover" src="https://img.icons8.com/external-creatype-outline-colourcreatype/64/ffffff/external-profile-photo-camera-interface-creatype-outline-colourcreatype.png">
                             </a>
                         </div>
-                        <div class="bg-sky-700 text-white p-4 rounded-xl w-full">
-                            <span>{{ message.content }}</span>
+                        <div class="bg-sky-700 text-white p-4 rounded-xl w-full relative">
+                          <div class="mb-4">
+                              <span>{{ message.content }}</span>
+                          </div>
+                          <form action="{% url 'message_delete' message.id %}" method="post" class="absolute top-0 right-0 mt-2 mr-2">
+                            {% csrf_token %}
+                            <button type="submit">
+                                <img src="https://img.icons8.com/small/16/A9A9A9/filled-trash.png" alt="filled-trash"/>
+                            </button>
+                          </form>
                         </div>
                     </div>
                     <div class="text-sm font-light py-1 ml-10">
