@@ -20,6 +20,7 @@
                           <div class="mb-4">
                               <span>{{ message.content }}</span>
                           </div>
+                          {% if message.sender == request.user %}
                           <form action="{% url 'message_delete' message.id %}" method="post" class="absolute top-0 right-0 mt-2 mr-2">
                             {% csrf_token %}
                             <button type="submit">
@@ -29,6 +30,7 @@
                           <a href="{% url 'message_edit' message.id %}" class="absolute bottom-0 right-0 mb-2 mr-2">
                             <img src="https://img.icons8.com/small/16/edit.png" alt="edit"/>
                           </a>
+                          {% endif %}
                         </div>
                     </div>
                     <div class="text-sm font-light py-1 ml-10">

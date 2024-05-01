@@ -60,6 +60,11 @@ class MessageEdit(UpdateView):
         context["form"] = MessageForm(instance=self.object)
         return context
 
+    def get_queryset(self):
+        """Limit messages to those owned by the request user."""
+        qs = super().get_queryset()
+        return qs.filter(sender=self.request.user)
+
 
 class MessageDelete(DeleteView):
     model = Message
