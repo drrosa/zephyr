@@ -30,9 +30,10 @@
         </div>
         <div class="sticky bottom-0 z-10 p-2">
             <div class="flex items-center px-2 py-2">
-                <form id="chat_message_form" method='POST' class="w-full">
+                <form id="chat_message_form" method='POST' class="w-full flex items-center">
                   {% csrf_token %}
                   {{ form.content }}
+                  <button type="submit" class="ml-2 bg-sky-900 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded-lg">Send</button>
                 </form>
             </div>
         </div>
