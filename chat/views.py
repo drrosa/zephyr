@@ -3,6 +3,7 @@ from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic.edit import UpdateView, DeleteView
+from django.db.models import Q
 from .models import Conversation, Message, User
 from .forms import MessageForm
 from openai import OpenAI
@@ -98,7 +99,7 @@ class MessageEdit(UpdateView):
     def get_queryset(self):
         """Limit messages to those owned by the request user."""
         qs = super().get_queryset()
-        return qs.filter(sender=self.request.user)
+        return qs.filter(Q(sender=self.request.user) | Q(sender=LLM))
 
 
 class MessageDelete(DeleteView):
