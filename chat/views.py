@@ -3,14 +3,22 @@ from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic.edit import UpdateView, DeleteView
-from .models import Conversation, Message
+from .models import Conversation, Message, User
 from .forms import MessageForm
+from openai import OpenAI
+import environ
+
+env = environ.Env()
+env.read_env()
+client = OpenAI(api_key=env("OPENAI_API_KEY"))
+LLM = User.objects.get(username="ChatGPT")
+GPT_MODEL = env("GPT_MODEL")
 
 
 @login_required
 def home(request):
-    welcome_topic = get_object_or_404(Conversation, topic_name="welcome")
-    chat_messages = welcome_topic.chat_messages.all()[:30]
+    message_thread = get_object_or_404(Conversation, topic_name="welcome")
+    chat_messages = message_thread.chat_messages.all()[:30]
     form = MessageForm()
 
     if request.method == "POST":
@@ -18,11 +26,38 @@ def home(request):
         if form.is_valid:
             message = form.save(commit=False)
             message.sender = request.user
-            message.thread = welcome_topic
+            message.thread = message_thread
             message.save()
+            get_chatgpt_response(request.POST["content"], message_thread)
             return redirect("home")
 
     return render(request, "home.html", {"chat_messages": chat_messages, "form": form})
+
+
+def get_chatgpt_response(user_message, message_thread):
+    try:
+        system_message = """
+        You are a helpful assistant.
+        """
+        messages = [
+            {"role": "system", "content": system_message},
+            {"role": "user", "content": user_message},
+        ]
+
+        response = client.chat.completions.create(
+            model=GPT_MODEL,
+            messages=messages,
+        )
+        msg_content = response.choices[0].message.content
+
+        bot_message = Message(
+            sender=LLM,
+            content=msg_content,
+            thread=message_thread,
+        )
+        bot_message.save()
+    except Exception as e:
+        print(f"Error in get_chatgpt_response: {e}")
 
 
 @login_required
