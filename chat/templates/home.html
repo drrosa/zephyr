@@ -15,15 +15,19 @@
         </div>
         <div class="sticky bottom-0 z-10 p-2">
             <div class="flex items-center px-2 py-2">
-              <form id="chat_message_form" class="w-full flex items-center"
-              hx-post="{% url 'home' %}"
-              hx-target="#chat_messages"
-              hx-swap="beforeend"
-              _="on htmx:afterRequest reset() me">
+              {% if is_edit %}
+                <form id="chat_message_form" method='POST' class="w-full flex items-center">
+              {% else %}
+                <form id="chat_message_form" class="w-full flex items-center"
+                  hx-post="{% url 'home' %}"
+                  hx-target="#chat_messages"
+                  hx-swap="beforeend"
+                  _="on htmx:afterRequest reset() me">
+              {% endif %}
                   {% csrf_token %}
                   {{ form.content }}
-                  <button type="submit" class="ml-2 bg-sky-900 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded-lg">Send</button>
-              </form>
+                  <button type="submit" class="ml-2 bg-sky-900 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded-lg">{{ is_edit|yesno:"Save,Send"}}</button>
+                </form>
             </div>
         </div>
     </div>

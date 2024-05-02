@@ -94,8 +94,12 @@ class MessageEdit(UpdateView):
         context = super().get_context_data(**kwargs)
         welcome_topic = get_object_or_404(Conversation, topic_name="welcome")
         chat_messages = welcome_topic.chat_messages.all()[:30]
+        form = MessageForm(instance=self.object)
+        message = form.save(commit=False)
         context["chat_messages"] = chat_messages
-        context["form"] = MessageForm(instance=self.object)
+        context["form"] = form
+        context["is_edit"] = True
+        context["is_bot_message"] = message.sender.username == "ChatGPT"
         return context
 
     def get_queryset(self):
