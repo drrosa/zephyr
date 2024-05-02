@@ -9,48 +9,21 @@
         <div id='chat_container' class="overflow-y-auto grow">
             <ul id='chat_messages' class="flex flex-col justify-end gap-2 p-4">
                 {% for message in chat_messages reversed %}
-                <li>
-                    <div class="flex justify-start">
-                        <div class="flex items-end mr-2 " >
-                            <a href="">
-                                <img class="w-8 h-8 object-cover" src="https://img.icons8.com/external-creatype-outline-colourcreatype/64/ffffff/external-profile-photo-camera-interface-creatype-outline-colourcreatype.png">
-                            </a>
-                        </div>
-                        <div class="bg-sky-700 text-white p-4 rounded-xl w-full relative">
-                          <div class="mb-4">
-                              <span>{{ message.content }}</span>
-                          </div>
-                          {% if message.sender == request.user or message.sender.username == "ChatGPT" %}
-                          <form action="{% url 'message_delete' message.id %}" method="POST" class="absolute top-0 right-0 mt-2 mr-2">
-                            {% csrf_token %}
-                            <button type="submit">
-                                <img src="https://img.icons8.com/small/16/A9A9A9/filled-trash.png" alt="filled-trash"/>
-                            </button>
-                          </form>
-                          <form action="{% url 'message_edit' message.id %}" method="POST" class="absolute bottom-0 right-0 mb-2 mr-2">
-                            {% csrf_token %}
-                            <button type="submit">
-                            <img src="https://img.icons8.com/small/16/edit.png" alt="edit"/>
-                            </button>
-                          </form>
-                          {% endif %}
-                        </div>
-                    </div>
-                    <div class="text-sm font-light py-1 ml-10">
-                        <span class="text-white">{{ message.sender.first_name }}</span>
-                        <span class="text-sky-400">@{{ message.sender.username }}</span>
-                    </div>
-                </li>
+                  {% include 'chat/message.html' %}
                 {% endfor %}
             </ul>
         </div>
         <div class="sticky bottom-0 z-10 p-2">
             <div class="flex items-center px-2 py-2">
-                <form id="chat_message_form" method='POST' class="w-full flex items-center">
+              <form id="chat_message_form" class="w-full flex items-center"
+              hx-post="{% url 'home' %}"
+              hx-target="#chat_messages"
+              hx-swap="beforeend"
+              _="on htmx:afterRequest reset() me">
                   {% csrf_token %}
                   {{ form.content }}
                   <button type="submit" class="ml-2 bg-sky-900 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded-lg">Send</button>
-                </form>
+              </form>
             </div>
         </div>
     </div>

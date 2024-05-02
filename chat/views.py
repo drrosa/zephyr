@@ -22,15 +22,16 @@ def home(request):
     chat_messages = message_thread.chat_messages.all()[:30]
     form = MessageForm()
 
-    if request.method == "POST":
+    if request.htmx:
         form = MessageForm(request.POST)
         if form.is_valid:
             message = form.save(commit=False)
             message.sender = request.user
             message.thread = message_thread
             message.save()
-            get_chatgpt_response(request.POST["content"], message_thread)
-            return redirect("home")
+            bot_message = get_chatgpt_response(request.POST["content"], message_thread)
+            chat_messages = {"chat_messages": (message, bot_message)}
+            return render(request, "chat/partials/message.html", chat_messages)
 
     return render(request, "home.html", {"chat_messages": chat_messages, "form": form})
 
@@ -57,6 +58,7 @@ def get_chatgpt_response(user_message, message_thread):
             thread=message_thread,
         )
         bot_message.save()
+        return bot_message
     except Exception as e:
         print(f"Error in get_chatgpt_response: {e}")
 
