@@ -12,7 +12,7 @@ import environ
 env = environ.Env()
 env.read_env()
 client = OpenAI(api_key=env("OPENAI_API_KEY"))
-LLM = User.objects.get(username="ChatGPT")
+LLM = User.objects.get(username="chatGPT")
 GPT_MODEL = env("GPT_MODEL")
 
 
@@ -99,7 +99,7 @@ class MessageEdit(UpdateView):
         context["chat_messages"] = chat_messages
         context["form"] = form
         context["is_edit"] = True
-        context["is_bot_message"] = message.sender.username == "ChatGPT"
+        context["is_bot_message"] = message.sender.username == "chatGPT"
         return context
 
     def get_queryset(self):
