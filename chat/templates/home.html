@@ -34,3 +34,15 @@
 </wrapper>
 
 {% endblock %}
+
+{% block javascript %}
+ <script>
+
+    function autoScrollDown() {
+      const divEl = document.getElementById('chat_container');
+      divEl.scrollTop = divEl.scrollHeight;
+    }
+    autoScrollDown();
+
+ </script>
+ {% endblock %}
